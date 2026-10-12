@@ -1,0 +1,200 @@
+{
+ "_comment": "Made-up inputs for the morning page. Rendered by tools/render-media.sh.",
+ "now": "2026-10-14T05:30:00",
+ "place": "Springfield",
+ "weather": {
+  "timezone": "America/Chicago",
+  "daily": {
+   "time": [
+    "2026-10-14",
+    "2026-10-15"
+   ],
+   "weather_code": [
+    2,
+    61
+   ],
+   "temperature_2m_max": [
+    64.2,
+    58.0
+   ],
+   "temperature_2m_min": [
+    45.6,
+    44.1
+   ],
+   "precipitation_probability_max": [
+    40,
+    70
+   ],
+   "sunrise": [
+    "2026-10-14T07:02",
+    "2026-10-15T07:03"
+   ],
+   "sunset": [
+    "2026-10-14T18:16",
+    "2026-10-15T18:14"
+   ],
+   "wind_speed_10m_max": [
+    11.3,
+    14.0
+   ]
+  },
+  "hourly": {
+   "time": [
+    "2026-10-14T00:00",
+    "2026-10-14T01:00",
+    "2026-10-14T02:00",
+    "2026-10-14T03:00",
+    "2026-10-14T04:00",
+    "2026-10-14T05:00",
+    "2026-10-14T06:00",
+    "2026-10-14T07:00",
+    "2026-10-14T08:00",
+    "2026-10-14T09:00",
+    "2026-10-14T10:00",
+    "2026-10-14T11:00",
+    "2026-10-14T12:00",
+    "2026-10-14T13:00",
+    "2026-10-14T14:00",
+    "2026-10-14T15:00",
+    "2026-10-14T16:00",
+    "2026-10-14T17:00",
+    "2026-10-14T18:00",
+    "2026-10-14T19:00",
+    "2026-10-14T20:00",
+    "2026-10-14T21:00",
+    "2026-10-14T22:00",
+    "2026-10-14T23:00"
+   ],
+   "temperature_2m": [
+    48,
+    49,
+    48,
+    47,
+    47,
+    46,
+    46,
+    47,
+    50,
+    53,
+    56,
+    59,
+    61,
+    63,
+    64,
+    64,
+    63,
+    61,
+    58,
+    56,
+    54,
+    52,
+    51,
+    50
+   ],
+   "weather_code": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    61,
+    61,
+    3,
+    2,
+    2,
+    1,
+    1
+   ],
+   "precipitation_probability": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10,
+    20,
+    30,
+    40,
+    40,
+    30,
+    10,
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "habits": {
+  "tasks": [
+   {
+    "text": "Return the library books",
+    "done": false
+   },
+   {
+    "text": "Call the plumber about the kitchen sink",
+    "done": false
+   },
+   {
+    "text": "Draft notes for Thursday's budget review",
+    "done": false
+   },
+   {
+    "text": "Water the plants",
+    "done": true
+   }
+  ],
+  "habits": [
+   {
+    "text": "Walk 30 minutes",
+    "streak": 6
+   },
+   {
+    "text": "Read 20 pages",
+    "streak": 12
+   },
+   {
+    "text": "Stretch before bed",
+    "streak": 0
+   },
+   {
+    "text": "No screens after 10",
+    "streak": 3
+   }
+  ]
+ },
+ "todos": {
+  "overdue": [
+   {
+    "text": "Renew the car registration",
+    "due": "2026-10-10"
+   }
+  ],
+  "upcoming": [
+   {
+    "text": "Dentist, 2:30",
+    "due": "2026-10-17"
+   }
+  ]
+ }
+}

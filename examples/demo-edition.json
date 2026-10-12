@@ -1,0 +1,602 @@
+{
+ "_comment": "A made-up edition for the demo build: paper.py build --demo. Every place, outlet, team, story and price here is invented.",
+ "date": "2026-10-14",
+ "printed": "2026-10-14T05:16:00",
+ "note": "Demo edition: every story, score and price in it is made up.",
+ "llm_stats": {
+  "calls": 7,
+  "fails": 0
+ },
+ "loc": {
+  "lat": 39.8,
+  "lon": -89.65,
+  "city": "Springfield",
+  "county": "Harlow County",
+  "state": "",
+  "state_code": "",
+  "source": "demo"
+ },
+ "weather": {
+  "timezone": "America/Chicago",
+  "daily": {
+   "time": [
+    "2026-10-14",
+    "2026-10-15"
+   ],
+   "weather_code": [
+    2,
+    61
+   ],
+   "temperature_2m_max": [
+    64.2,
+    58.0
+   ],
+   "temperature_2m_min": [
+    45.6,
+    44.1
+   ],
+   "precipitation_probability_max": [
+    40,
+    70
+   ],
+   "sunrise": [
+    "2026-10-14T07:02",
+    "2026-10-15T07:03"
+   ],
+   "sunset": [
+    "2026-10-14T18:16",
+    "2026-10-15T18:14"
+   ],
+   "wind_speed_10m_max": [
+    11.3,
+    14.0
+   ]
+  },
+  "hourly": {
+   "time": [
+    "2026-10-14T00:00",
+    "2026-10-14T01:00",
+    "2026-10-14T02:00",
+    "2026-10-14T03:00",
+    "2026-10-14T04:00",
+    "2026-10-14T05:00",
+    "2026-10-14T06:00",
+    "2026-10-14T07:00",
+    "2026-10-14T08:00",
+    "2026-10-14T09:00",
+    "2026-10-14T10:00",
+    "2026-10-14T11:00",
+    "2026-10-14T12:00",
+    "2026-10-14T13:00",
+    "2026-10-14T14:00",
+    "2026-10-14T15:00",
+    "2026-10-14T16:00",
+    "2026-10-14T17:00",
+    "2026-10-14T18:00",
+    "2026-10-14T19:00",
+    "2026-10-14T20:00",
+    "2026-10-14T21:00",
+    "2026-10-14T22:00",
+    "2026-10-14T23:00"
+   ],
+   "temperature_2m": [
+    48,
+    49,
+    48,
+    47,
+    47,
+    46,
+    46,
+    47,
+    50,
+    53,
+    56,
+    59,
+    61,
+    63,
+    64,
+    64,
+    63,
+    61,
+    58,
+    56,
+    54,
+    52,
+    51,
+    50
+   ],
+   "weather_code": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    61,
+    61,
+    3,
+    2,
+    2,
+    1,
+    1
+   ],
+   "precipitation_probability": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10,
+    20,
+    30,
+    40,
+    40,
+    30,
+    10,
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "calendar": [
+  {
+   "time": "9:30 AM to 10:00 AM",
+   "title": "Team standup",
+   "where": ""
+  },
+  {
+   "time": "12:15 PM to 1:00 PM",
+   "title": "Lunch with Sam",
+   "where": "Corner Cafe"
+  },
+  {
+   "time": "6:00 PM to 7:30 PM",
+   "title": "Book club",
+   "where": "Public library, room B"
+  }
+ ],
+ "world": {
+  "headline": "Five river nations sign a shared water agreement after a three-day summit",
+  "llm": true,
+  "glance": "Five countries along the Vessa River agreed to share flow data and hold dry-season releases to an agreed schedule.",
+  "summary": [
+   "Delegates from the five countries that share the Vessa River signed an agreement on Tuesday that sets out how water is released from upstream dams during the dry season, according to statements from the summit's host government.",
+   "Under the agreement, each country will publish daily flow readings from its main gauging stations, and a joint commission will meet four times a year. Officials said the commission can call an emergency session if flows fall below an agreed level.",
+   "The agreement does not settle a separate dispute over a proposed dam on a northern tributary. Two delegations said that issue would be taken up at a meeting next spring."
+  ],
+  "sources": [
+   {
+    "name": "Northern Wire",
+    "title": "River nations agree data sharing, release schedule",
+    "link": "https://example.com/world-1"
+   },
+   {
+    "name": "Global Desk",
+    "title": "Vessa summit ends with signed accord",
+    "link": "https://example.com/world-2"
+   },
+   {
+    "name": "Harbor Times",
+    "title": "Five countries sign river deal after long talks",
+    "link": "https://example.com/world-3"
+   }
+  ],
+  "full": null
+ },
+ "local": {
+  "headline": "Council extends library evening hours through the winter",
+  "llm": true,
+  "place": "Springfield, Harlow County",
+  "glance": "The city council voted 6 to 1 to keep the main library open until 9 p.m. on weeknights from November through February.",
+  "summary": [
+   "The Springfield City Council voted 6 to 1 on Monday to keep the main library open until 9 p.m. on weeknights from November through February, two hours later than its current schedule.",
+   "The extension will cost about $48,000, which the council moved from an unspent street-lighting line. The library director told the council that evening visits rose by a third during a trial last winter.",
+   "The one council member who voted against the change said she supported longer hours but wanted the money to come from next year's budget instead."
+  ],
+  "sources": [
+   {
+    "name": "Springfield Ledger",
+    "title": "Library to stay open later this winter",
+    "link": "https://example.com/local-1"
+   }
+  ],
+  "full": null
+ },
+ "markets": {
+  "glance": "Stocks rose for a third session on Tuesday, led by chipmakers, while oil slipped and the 10-year yield edged lower.",
+  "why": "Stocks rose for a third straight session on Tuesday. Chipmakers led the gains after two large suppliers reported higher orders, according to company statements. Oil fell after a weekly inventory report showed a larger build than in recent weeks. The 10-year yield eased slightly, and no single reason was widely reported for that move.",
+  "board": [
+   {
+    "symbol": "^GSPC",
+    "name": "S&P 500",
+    "kind": "index",
+    "last": 6412.38,
+    "day": 0.62,
+    "week": 1.41,
+    "day_abs": 39.5,
+    "week_abs": 89.1,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "^IXIC",
+    "name": "Nasdaq",
+    "kind": "index",
+    "last": 21208.11,
+    "day": 0.94,
+    "week": 2.05,
+    "day_abs": 197.4,
+    "week_abs": 426.0,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "^DJI",
+    "name": "Dow",
+    "kind": "index",
+    "last": 45980.27,
+    "day": 0.31,
+    "week": 0.88,
+    "day_abs": 142.1,
+    "week_abs": 401.2,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "^RUT",
+    "name": "Russell 2000",
+    "kind": "index",
+    "last": 2391.64,
+    "day": -0.18,
+    "week": 0.42,
+    "day_abs": -4.3,
+    "week_abs": 10.0,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "^TNX",
+    "name": "10-year yield",
+    "kind": "yield",
+    "last": 4.08,
+    "day": -0.49,
+    "week": -1.2,
+    "day_abs": -0.02,
+    "week_abs": -0.05,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "CL=F",
+    "name": "Crude oil",
+    "kind": "price",
+    "last": 68.42,
+    "day": -1.12,
+    "week": -2.3,
+    "day_abs": -0.77,
+    "week_abs": -1.61,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "GC=F",
+    "name": "Gold",
+    "kind": "price",
+    "last": 2688.5,
+    "day": 0.21,
+    "week": 1.05,
+    "day_abs": 5.6,
+    "week_abs": 27.9,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "BTC-USD",
+    "name": "Bitcoin",
+    "kind": "price",
+    "last": 91240.0,
+    "day": 1.84,
+    "week": -0.6,
+    "day_abs": 1648.0,
+    "week_abs": -551.0,
+    "asof": "2026-10-13"
+   },
+   {
+    "symbol": "DX-Y.NYB",
+    "name": "Dollar index",
+    "kind": "index",
+    "last": 101.36,
+    "day": -0.12,
+    "week": 0.3,
+    "day_abs": -0.12,
+    "week_abs": 0.3,
+    "asof": "2026-10-13"
+   }
+  ],
+  "watch": [
+   {
+    "symbol": "ACME",
+    "last": 142.18,
+    "day": 1.2,
+    "week": 3.4,
+    "lo": 98.4,
+    "hi": 151.0
+   },
+   {
+    "symbol": "GLBX",
+    "last": 38.07,
+    "day": -0.8,
+    "week": -2.1,
+    "lo": 31.2,
+    "hi": 55.9
+   },
+   {
+    "symbol": "NRTH",
+    "last": 12.5,
+    "day": 0.0,
+    "week": 0.6,
+    "lo": 9.8,
+    "hi": 14.1
+   }
+  ],
+  "story": {
+   "headline": "Halvern Foods agrees to buy a regional bakery chain",
+   "llm": true,
+   "summary": [
+    "Halvern Foods said on Tuesday it had agreed to buy Brightloaf Bakeries, a chain of 140 stores, for about $610 million in cash. The companies said the deal needs approval from regulators and Brightloaf's shareholders.",
+    "Halvern said it plans to keep the Brightloaf name and its current managers. The company expects the purchase to close in the first quarter of next year."
+   ],
+   "sources": [
+    {
+     "name": "Harbor Times",
+     "title": "Halvern to buy Brightloaf in $610 million deal",
+     "link": "https://example.com/biz-1"
+    }
+   ],
+   "full": null
+  }
+ },
+ "science": {
+  "headline": "Pond snails appear to use Earth's magnetic field to find their way back to shallow water",
+  "llm": true,
+  "glance": "In lab tests, a common pond snail turned toward shallow water even in the dark, and lost that ability when the magnetic field around its tank was scrambled.",
+  "summary": [
+   "Researchers at the Oakmont Institute report that a common freshwater snail turns toward the shallow end of a tank even in complete darkness, and stops doing so when the magnetic field around the tank is scrambled with electric coils.",
+   "The team tested 312 snails over two years. When the field was rotated by 90 degrees, the snails' preferred heading rotated with it. The authors say this points to a magnetic sense but does not yet show which cells detect the field.",
+   "The study, published this week, notes that snails raised in tanks without a stable field showed no clear preference, which the authors say suggests the behavior is partly learned."
+  ],
+  "sources": [
+   {
+    "name": "Field Notes Weekly",
+    "title": "Snails may navigate by magnetism, study suggests",
+    "link": "https://example.com/sci-1"
+   }
+  ],
+  "full": null
+ },
+ "reddit": null,
+ "media": null,
+ "sports": {
+  "day": "2026-10-13",
+  "leagues": [
+   {
+    "key": "nba",
+    "name": "Basketball",
+    "phase": "",
+    "standings": [],
+    "games": [
+     {
+      "id": "b1",
+      "league": "Basketball",
+      "away": {
+       "id": "gulls",
+       "name": "Harbor City Gulls",
+       "short": "Gulls",
+       "abbr": "GUL",
+       "score": 118,
+       "home": false,
+       "record": "",
+       "lines": []
+      },
+      "home": {
+       "id": "comets",
+       "name": "Lakeside Comets",
+       "short": "Comets",
+       "abbr": "COM",
+       "score": 121,
+       "home": true,
+       "record": "",
+       "lines": []
+      },
+      "detail": "Final/OT",
+      "fav": true,
+      "flagged": true,
+      "note": "",
+      "watch_line": "Two teams trading runs all night, a tie with seconds left, and five extra minutes nobody saw coming."
+     },
+     {
+      "id": "b2",
+      "league": "Basketball",
+      "away": {
+       "id": "owls",
+       "name": "Pine Hollow Owls",
+       "short": "Owls",
+       "abbr": "OWL",
+       "score": 97,
+       "home": false,
+       "record": "",
+       "lines": []
+      },
+      "home": {
+       "id": "miners",
+       "name": "Redbank Miners",
+       "short": "Miners",
+       "abbr": "MIN",
+       "score": 112,
+       "home": true,
+       "record": "",
+       "lines": []
+      },
+      "detail": "Final",
+      "note": ""
+     },
+     {
+      "id": "b3",
+      "league": "Basketball",
+      "away": {
+       "id": "tides",
+       "name": "Eastport Tides",
+       "short": "Tides",
+       "abbr": "TID",
+       "score": 104,
+       "home": false,
+       "record": "",
+       "lines": []
+      },
+      "home": {
+       "id": "rams",
+       "name": "Granite Falls Rams",
+       "short": "Rams",
+       "abbr": "RAM",
+       "score": 99,
+       "home": true,
+       "record": "",
+       "lines": []
+      },
+      "detail": "Final",
+      "note": ""
+     }
+    ]
+   },
+   {
+    "key": "nfl",
+    "name": "Football",
+    "phase": "",
+    "standings": [],
+    "games": [
+     {
+      "id": "f1",
+      "league": "Football",
+      "away": {
+       "id": "foxes",
+       "name": "Riverton Foxes",
+       "short": "Foxes",
+       "abbr": "FOX",
+       "score": 24,
+       "home": false,
+       "record": "",
+       "lines": []
+      },
+      "home": {
+       "id": "bison",
+       "name": "Cedar Bluff Bison",
+       "short": "Bison",
+       "abbr": "BIS",
+       "score": 27,
+       "home": true,
+       "record": "",
+       "lines": []
+      },
+      "detail": "Final",
+      "note": "",
+      "flagged": true,
+      "watch_line": "A fourth quarter with three lead changes and a final drive worth the replay."
+     },
+     {
+      "id": "f2",
+      "league": "Football",
+      "away": {
+       "id": "hawks",
+       "name": "Millbrook Hawks",
+       "short": "Hawks",
+       "abbr": "HAW",
+       "score": 10,
+       "home": false,
+       "record": "",
+       "lines": []
+      },
+      "home": {
+       "id": "mariners",
+       "name": "Southgate Mariners",
+       "short": "Mariners",
+       "abbr": "MAR",
+       "score": 31,
+       "home": true,
+       "record": "",
+       "lines": []
+      },
+      "detail": "Final",
+      "note": ""
+     }
+    ]
+   },
+   {
+    "key": "mlb",
+    "name": "Baseball",
+    "phase": "Postseason",
+    "standings": [],
+    "games": [
+     {
+      "id": "m1",
+      "league": "Baseball",
+      "away": {
+       "id": "pilots",
+       "name": "Northfield Pilots",
+       "short": "Pilots",
+       "abbr": "PIL",
+       "score": 3,
+       "home": false,
+       "record": "",
+       "lines": []
+      },
+      "home": {
+       "id": "badgers",
+       "name": "Oak Valley Badgers",
+       "short": "Badgers",
+       "abbr": "BAD",
+       "score": 2,
+       "home": true,
+       "record": "",
+       "lines": []
+      },
+      "detail": "Final/11",
+      "note": "League Championship, Game 4",
+      "flagged": true,
+      "watch_line": "Eleven innings of playoff pitching, with the tension building every frame after the seventh."
+     }
+    ]
+   }
+  ],
+  "player": {
+   "name": "Marco Ilic",
+   "team": "Lakeside Comets",
+   "line": "38 pts, 11 reb, 9 ast, 2 stl, 1 blk, 13-24 FG, 5-11 3PT, 4 TO in 44 min",
+   "game_id": "b1"
+  },
+  "today": [
+   {
+    "league": "Basketball",
+    "text": "Comets at Owls",
+    "when": "2026-10-14T19:30:00-05:00",
+    "note": ""
+   }
+  ],
+  "f1": null,
+  "tennis": [],
+  "soccer": null
+ }
+}

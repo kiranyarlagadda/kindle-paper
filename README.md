@@ -1,132 +1,81 @@
 # Kiran's Paper
 
-A Kindle that does two quiet things. Every morning it gets a small newspaper, built overnight on a computer at home, with an optional local language model writing the summaries. And when it's asleep, the sleep screen is a one-page dashboard for the day: date, weather, tasks, a quote. E-ink holds that picture at zero power, so it sits on the desk like a printed page.
+I wanted my Kindle to be more than a book. Now it does two things: when it's asleep, the screen shows a one-page dashboard for the day, and every morning it gets a small newspaper made just for me.
 
 <p align="center">
-  <img src="media/photo-hero.jpg" alt="The morning page on the Kindle's sleep screen, on a charging stand" width="440">
+  <img src="media/photo-hero.jpg" alt="The morning dashboard on a Kindle's sleep screen, on a charging stand" width="440">
 </p>
 
-> The photos are the real device, with demo content on the screen for the occasion. The rendered pages further down come from made-up demo data via [`tools/render-media.sh`](tools/render-media.sh), using the same pipeline as production.
+> The photos are the real device, with demo content on the screen. Everything else in here is rendered from made-up data.
 
-The device is a 2021 Kindle Paperwhite running [KOReader](https://koreader.rocks). The server side is about 3,000 lines of standard-library Python on a Mac mini. Nothing is exposed to the internet.
+It's a 2021 Kindle Paperwhite running [KOReader](https://koreader.rocks). A Mac mini at home builds both pages with about 3,000 lines of plain Python. Nothing is on the public internet.
 
-## On the desk
+## The dashboard
+
+E-ink keeps an image on screen without using power, so the sleep screen is the perfect place for a daily summary. Mine has the date, the weather where I am, my reminders, my work reminders, and a quote from someone worth reading. It gets rebuilt every morning before I'm up.
 
 <p align="center">
-  <img src="media/photo-desk.jpg" alt="The Kindle on its stand on a desk, showing the morning page" width="360">
-  <img src="media/photo-home.jpg" alt="KOReader's home folder: Books, Comics, Kids, Manga, Newspaper and the Homepage image" width="300">
+  <img src="media/photo-desk.jpg" alt="The Kindle on its stand on a desk" width="360">
+  <img src="media/photo-home.jpg" alt="KOReader home folder with Books, Comics, Kids, Manga, Newspaper and Homepage" width="300">
 </p>
 
-Asleep, it's a desk display. Awake, it's an e-reader whose home folder has one entry per kind of reading, plus the newspaper and the dashboard as a plain image.
+When I pick it up, it's a normal e-reader. The home folder has one entry per kind of reading, plus the newspaper and the dashboard.
 
-## What's in an edition
+## The newspaper
 
-| | |
-|---|---|
-| <img src="media/paper-front.png" alt="Front page of a demo edition" width="300"> | **The front page is a homepage.** Masthead, date and the town the owner is in, the weather, today's calendar, and one sentence per story. Tap a sentence and you're in the article; every page links back. KOReader follows EPUB internal links well, which is what makes this work. |
+<img src="media/paper-front.png" alt="Front page of a demo edition" width="300" align="right">
 
-The sections, each of which disappears on a day it has nothing to say:
+Each edition is a real EPUB, so I can tap through it like a book. The front page works like a homepage: one line per story, tap it to read the rest.
 
-- **World.** One story. The build pulls the top items from three wire and broadcast feeds and picks the one all of them are covering. If three newsrooms independently lead with it, it probably matters, and the overlap strips out a lot of single-outlet framing. The model writes a flat summary and credits the sources.
-- **Local.** Whatever county the owner's phone is in today. No town is written down anywhere in the code. A news search for that county and city over the last day, then the model picks the most significant civic story and skips crime blotter, obituaries and ads.
-- **Markets.** Major indexes, the 10-year, oil, gold, bitcoin and the dollar, with day and week changes, an optional watchlist with 52-week range bars, and one paragraph on why things moved.
-- **Science.** One new finding, not an explainer.
-- **Sports**, with a spoiler-free **Worth watching** box. More on that below.
-- Optional **Reddit** (your private feed) and **New in the library** (a Plex server), both hidden unless configured.
+- **World:** one story, the one that several big news outlets are all leading with.
+- **Local:** the most important civic story wherever my phone is that day.
+- **Markets:** the numbers and a short summary of why things moved. It's not allowed to give advice, and a check after the AI step enforces that.
+- **Science:** one new finding.
+- **Sports:** scores, plus a "worth watching" box for games that were actually good. Those scores are hidden behind a link, so I can watch the replay without knowing the result.
+
+A local AI model on a home server writes the summaries. If it's busy or offline, the paper still comes out, just plainer. Sections with nothing to say that day are left out.
+
+<br clear="right">
 
 <p align="center">
-  <img src="media/paper-markets.png" alt="Markets page of a demo edition" width="300">
-  <img src="media/paper-sports.png" alt="Sports page with scores of flagged games hidden" width="300">
-  <img src="media/paper-watch.png" alt="Worth watching page with Show score links" width="300">
+  <img src="media/paper-sports.png" alt="Sports page with a flagged game's score hidden" width="280">
+  <img src="media/paper-markets.png" alt="Markets page" width="280">
 </p>
-
-### Two guardrails I don't leave to the model
-
-**Markets never gives advice.** The prompt says report only. That's not enough on its own, so a regex checks the result for anything that reads like buy, sell, hold, a price target or a forecast. If it trips, the paragraph is dropped and the front page gets a sentence built from the numbers instead.
-
-**Sports never spoils a good game.** Every finished game gets a watchability score: a close margin, overtime or extra innings, lead changes, a big comeback, playoff stakes, a monster stat line. Games that clear the bar (a lower bar for favorite teams) get one line from the model about why they're worth a replay, checked against a list of giveaway words like *won*, *beat* and *clinched*, and any number that looks like a score. Their scores are then removed from every page in the edition. The real result sits on a separate page marked `linear="no"` in the EPUB spine, so page turns never land on it. The only way in is a "Show score" link. News headlines that name a flagged team are skipped too, so the result can't leak through the world or local pages.
 
 ## How it works
 
 <p align="center">
-  <img src="media/architecture.svg" alt="Architecture: phone location and public sources feed paper.py and kindle.py on a Mac mini; brain_api.py serves the results to the Kindle over a tailnet" width="900">
+  <img src="media/architecture.svg" alt="Phone location and public sources feed the builders on a Mac mini; a small server hands the results to the Kindle over Tailscale" width="900">
 </p>
 
-| Time (Eastern) | Where | What happens |
-|---|---|---|
-| 05:15 | Mac mini | `paper.py` gathers every section, calls the model inside a time budget, writes `YYYY-MM-DD.epub`, prunes anything older than seven days |
-| 05:30 | Mac mini | headless Chrome screenshots the morning page at 1236x1648, `sips` converts it to 8-bit gray |
-| 05:45 | Kindle | the reader wakes on its own alarm, syncs both, posts its log home, and goes back to sleep |
+- **5:15 am:** the Mac mini builds the newspaper.
+- **5:30 am:** it renders the dashboard to an image the exact size of the Kindle's screen.
+- **5:45 am:** the Kindle wakes itself up, downloads both, and goes back to sleep. That takes about a minute.
 
-A few details I'm happy with:
+The weather, local news and even the Kindle's clock follow my phone's location, so nothing changes by hand when I travel. The Kindle reaches the mini over Tailscale from anywhere.
 
-- **No dependencies.** Everything is Python's standard library plus tools macOS ships. The EPUB is assembled by hand with `zipfile` (the `mimetype` entry first and stored uncompressed, a nav document, an NCX for older readers, a spine) and passes `epubcheck` with no errors or warnings. Every page is parsed as XML at build time; one that fails is replaced with a stub instead of breaking the book.
-- **The model is optional.** Summaries and picks come from Qwen3.8-27B on a GPU box at home, behind a LiteLLM gateway. Every job has a deterministic fallback (first item, feed summary, a templated line), and after three failed calls in a row the build stops asking. With the GPU busy, the paper still comes out in about 12 seconds instead of 70, just plainer.
-- **Location follows a phone.** The Home Assistant app reports where the phone is. The server reverse geocodes that with OpenStreetMap (cached, at most one request a second, logs name the city and never the coordinates), and the weather, the local news and the Kindle's clock all follow it.
-- **Full text only where it's offered.** Articles are extracted with a small readability-style parser on `html.parser`. Some publishers block automated readers, and those stories fall back to the headline and feed summary. No paywall tricks.
-- **Private by default.** The server answers only private addresses that also present a token. Away from home, the Kindle reaches it over a private Tailscale tailnet.
+Getting a sleeping Kindle to wake up on schedule was the trickiest part. The short version is in [docs/power.md](docs/power.md).
 
-More in [docs/architecture.md](docs/architecture.md) and [docs/decisions.md](docs/decisions.md).
+## What I learned
 
-## The 05:45 wake
+- **A sleeping device runs nothing.** My first version refreshed every hour, but those timers pause while the Kindle sleeps, so the dashboard was always a day old. A hardware wake-up alarm fixed it.
+- **Waking up isn't the same as being awake.** After the alarm, the Kindle comes back half asleep with WiFi off, so the script has to wake it fully before it can sync.
+- **Keep the AI optional.** The GPU it runs on is shared, and one day another app had hogged its memory. Because every AI step has a fallback, the paper still showed up.
 
-This was the fun part, and it gets [its own page](docs/power.md). The short version:
+## Try it
 
-A sleeping Kindle doesn't run anything, so my first version (a sync loop that ran every hour) simply paused overnight and the sleep screen kept showing yesterday. The fix is to ask the power daemon for a real-time-clock alarm. A small script on the reader listens to power events. When the device is about to suspend, it sets `rtcWakeup` for the next 05:45. When it wakes from that alarm, it has to deal with a surprise: the Kindle comes back in a half-awake screensaver state where WiFi won't come up. So the script tells powerd to wake up fully, turns WiFi back on (KOReader switches it off at sleep), waits for the server, syncs, and posts the tail of its log home. Then it presses the power button in software, which makes KOReader draw a fresh sleep screen with the new dashboard and suspend again.
-
-The whole thing takes under a minute. If someone picks the Kindle up and presses the button instead, the script can tell (wrong state, or too far from the alarm time), syncs in the background, and never puts the device back to sleep in their hands.
-
-The clock needed fixing too. The device has no zoneinfo, so its local time file pointed at nothing and it ran on UTC. The server now looks up the zone for the phone's location and serves the compiled zoneinfo file at `/paper/tzfile`; the sync script installs it whenever the zone changes.
-
-## Things that broke along the way
-
-- **Every model call failed for a day.** An image generation app on the same GPU had been holding 12 GB of VRAM for three weeks, so the model couldn't load. The fallbacks did their job and nobody noticed except the footer, which counts successful model calls. Freeing that memory is now the first thing I check.
-- **The sleep screen was a day old.** The hourly sync loop is just `sleep 3600`, and `sleep` stops counting while the device is suspended. That's what led to the alarm design above.
-- **powerd doesn't say things once.** `readyToSuspend` fires every few seconds while the daemon waits to sleep. My first listener treated it as a one-off, re-armed the alarm on every tick and flooded its own log. Now a busy flag turns those ticks into `deferSuspend` calls while a refresh runs, and a changed alarm is the only thing that gets logged.
-- **A shell read half of a new script.** `sh` reads a script as it runs it, so overwriting a running script in place handed it a mix of old and new lines. Updates are now written to a temp file and renamed over the old one.
-- **A kill command killed my own session.** Restarting the listener with a pattern match over SSH also matched the SSH command carrying that pattern. [`restart-listener.sh`](device/restart-listener.sh) walks `/proc` and compares exact command lines instead.
-- **A tailnet node vanished.** Tailscale node keys expire, and one machine in the chain had been booted into another OS long enough to miss the renewal. Key expiry is off for the always-on nodes now.
-- **The calendar stayed empty.** macOS wouldn't let the background job read Calendar until a privacy prompt was approved, and `launchd` jobs don't show you that prompt. Running the job once by hand while watching the screen got the dialog to appear.
-- **Calendar emoji.** Subscribed sports calendars put emoji in event titles, which the Kindle's fonts render as boxes. They're stripped.
-- **"Thursday" on a Friday.** The markets paragraph once named the wrong day because the model took it from a headline. The prompt now supplies the weekday of the close and says to use only that.
-
-## Repo layout
-
-```
-server/      paper.py and its sources, kindle.py (morning page), brain_api.py (HTTP server), build scripts
-device/      the shell scripts that run on the reader: boot, sync, the daily wake
-examples/    made-up fixtures for the demo edition and the demo morning page
-tools/       render-media.sh, which rebuilds everything in media/
-media/       screenshots from demo data, the architecture diagram
-launchd/     example jobs for the server, the 05:15 build and the 05:30 render
-config/      example environment file (names and placeholders only)
-docs/        architecture, design decisions, the wake design
-```
-
-## Run it yourself
-
-The demo needs nothing but Python 3.9 or newer:
+The demo needs only Python 3.9 or newer:
 
 ```bash
-python3 server/paper.py build --demo          # made-up edition, no network, lands in server/out/demo/
-python3 server/kindle.py --demo examples/demo-morning.json > /tmp/morning.html
-tools/render-media.sh                         # macOS with Chrome: rebuild media/ from the fixtures
+python3 server/paper.py build --demo
 ```
 
-For a real edition:
+That builds a sample edition from made-up stories into `server/out/demo/`. To run it for real, copy `config/brain-api.env.example`, fill it in, and see [docs/architecture.md](docs/architecture.md). The dashboard render currently needs macOS.
 
-```bash
-mkdir -p ~/.config/brain-api
-cp config/brain-api.env.example ~/.config/brain-api/brain-api.env   # fill it in, chmod 600
-set -a; source ~/.config/brain-api/brain-api.env; set +a
-python3 server/paper.py build --no-llm        # or leave off --no-llm if LLM_URL and LLM_KEY are set
-python3 server/brain_api.py                   # then open http://localhost:8484/paper?key=YOUR_HABIT_TOKEN
-```
+## More
 
-The morning page and the calendar are macOS-specific (`sips`, `icalBuddy`, Chrome); the paper itself runs anywhere Python does. Favorite teams, player and soccer club, the watchlist and the paper's name are all environment variables. The `launchd/` plists schedule the three jobs.
+- [docs/architecture.md](docs/architecture.md): the files, the daily timeline, the endpoints
+- [docs/decisions.md](docs/decisions.md): why it's built the way it is
+- [docs/power.md](docs/power.md): the morning wake-up in detail
 
-On the reader, the scripts in `device/` expect KOReader in `/mnt/us/koreader`, the scripts in `/mnt/us/paper` with a `config.sh` made from [`config.example.sh`](device/config.example.sh), and some way to run `boot.sh` at startup. How you get a shell script to run on your particular e-reader is up to you and out of scope here.
-
-## License
-
-MIT, see [LICENSE](LICENSE).
+MIT license.

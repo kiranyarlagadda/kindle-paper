@@ -1,107 +1,114 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 580" width="980" height="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 500" width="1040" height="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
   <title>How the paper and the morning page get built and delivered</title>
   <style>
     .bg { fill: #ffffff; }
     .box { fill: #f6f8fa; stroke: #57606a; stroke-width: 1.5; }
-    .grp { fill: none; stroke: #8c959f; stroke-width: 1.2; stroke-dasharray: 6 5; }
-    .dev { fill: #f6f8fa; stroke: #1f2328; stroke-width: 2.5; }
-    .t { fill: #1f2328; font-size: 15px; font-weight: 600; }
-    .s { fill: #57606a; font-size: 12.5px; }
-    .lbl { fill: #57606a; font-size: 12px; font-style: italic; }
-    .gl { fill: #57606a; font-size: 13px; font-weight: 600; letter-spacing: .08em; }
-    .ln { fill: none; stroke: #57606a; stroke-width: 1.6; }
-    .dash { stroke-dasharray: 5 4; }
-    .ah { fill: #57606a; }
+    .device { fill: #f6f8fa; stroke: #1f2328; stroke-width: 2.5; }
+    .group { fill: none; stroke: #8c959f; stroke-width: 1.2; stroke-dasharray: 6 5; }
+    .title { fill: #1f2328; font-size: 16px; font-weight: 600; }
+    .text { fill: #57606a; font-size: 13px; }
+    .label { fill: #57606a; font-size: 12px; font-style: italic; }
+    .caps { fill: #57606a; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; }
+    .line { stroke: #57606a; stroke-width: 1.6; fill: none; }
+    .dash { stroke: #57606a; stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; }
+    .head { fill: #57606a; }
     @media (prefers-color-scheme: dark) {
       .bg { fill: #0d1117; }
-      .box, .dev { fill: #161b22; }
+      .box, .device { fill: #161b22; }
       .box { stroke: #8b949e; }
-      .dev { stroke: #e6edf3; }
-      .grp { stroke: #6e7681; }
-      .t { fill: #e6edf3; }
-      .s, .lbl, .gl { fill: #9198a1; }
-      .ln { stroke: #9198a1; }
-      .ah { fill: #9198a1; }
+      .device { stroke: #e6edf3; }
+      .group { stroke: #6e7681; }
+      .title { fill: #e6edf3; }
+      .text, .label, .caps { fill: #9198a1; }
+      .line, .dash { stroke: #9198a1; }
+      .head { fill: #9198a1; }
     }
   </style>
   <defs>
-    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path class="ah" d="M0 0L10 5L0 10z"/>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
     </marker>
   </defs>
-  <rect class="bg" width="980" height="580" rx="10"/>
+  <rect class="bg" width="1040" height="500"/>
 
   <!-- Inputs -->
-  <rect class="box" x="24" y="36" width="210" height="62" rx="8"/>
-  <text class="t" x="40" y="62">Phone</text>
-  <text class="s" x="40" y="82">Home Assistant app, location only</text>
+  <rect class="box" x="20" y="30" width="240" height="70" rx="8"/>
+  <text class="title" x="36" y="58">Phone</text>
+  <text class="text" x="36" y="80">Home Assistant app</text>
 
-  <rect class="box" x="24" y="140" width="210" height="62" rx="8"/>
-  <text class="t" x="40" y="166">Home Assistant</text>
-  <text class="s" x="40" y="186">LAN only, read with a token</text>
+  <rect class="box" x="20" y="140" width="240" height="70" rx="8"/>
+  <text class="title" x="36" y="168">Home Assistant</text>
+  <text class="text" x="36" y="190">LAN only, phone location</text>
 
-  <rect class="box" x="24" y="244" width="210" height="112" rx="8"/>
-  <text class="t" x="40" y="270">Public sources</text>
-  <text class="s" x="40" y="292">News feeds, ESPN, Yahoo</text>
-  <text class="s" x="40" y="311">Open-Meteo (weather, zone)</text>
-  <text class="s" x="40" y="330">OpenStreetMap (place names)</text>
+  <rect class="box" x="20" y="250" width="240" height="94" rx="8"/>
+  <text class="title" x="36" y="278">Public sources</text>
+  <text class="text" x="36" y="300">News feeds, ESPN, Yahoo</text>
+  <text class="text" x="36" y="320">Open-Meteo, OpenStreetMap</text>
 
-  <rect class="box" x="24" y="414" width="210" height="80" rx="8"/>
-  <text class="t" x="40" y="440">GPU box</text>
-  <text class="s" x="40" y="460">Qwen3.8-27B behind LiteLLM</text>
-  <text class="s" x="40" y="479">optional, every call has a fallback</text>
+  <rect class="box" x="20" y="384" width="240" height="86" rx="8"/>
+  <text class="title" x="36" y="412">GPU box (optional)</text>
+  <text class="text" x="36" y="434">Qwen3.8-27B behind LiteLLM</text>
+  <text class="text" x="36" y="454">every call has a fallback</text>
 
-  <!-- Server -->
-  <rect class="grp" x="296" y="20" width="356" height="540" rx="12"/>
-  <text class="gl" x="316" y="46">MAC MINI</text>
+  <path class="line" d="M140,100 L140,138" marker-end="url(#arrow)"/>
 
-  <rect class="box" x="316" y="66" width="316" height="72" rx="8"/>
-  <text class="t" x="332" y="92">paper.py, 05:15</text>
-  <text class="s" x="332" y="113">sections, model picks and summaries,</text>
-  <text class="s" x="332" y="130">EPUB3 zipped by hand</text>
+  <!-- Inputs into paper.py: three straight lines that never cross -->
+  <path class="line" d="M260,175 L346,96" marker-end="url(#arrow)"/>
+  <path class="line" d="M260,297 L346,112" marker-end="url(#arrow)"/>
+  <path class="line" d="M260,427 L346,128" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
 
-  <rect class="box" x="316" y="186" width="316" height="72" rx="8"/>
-  <text class="t" x="332" y="212">kindle.py + headless Chrome, 05:30</text>
-  <text class="s" x="332" y="233">one page at 1236x1648,</text>
-  <text class="s" x="332" y="250">sips to 8-bit gray</text>
+  <!-- Mac mini -->
+  <rect class="group" x="330" y="14" width="370" height="470" rx="12"/>
+  <text class="caps" x="348" y="38">MAC MINI</text>
 
-  <rect class="box" x="316" y="306" width="316" height="62" rx="8"/>
-  <text class="t" x="332" y="332">out/</text>
-  <text class="s" x="332" y="352">7 days of editions, kindle.png, power log</text>
+  <rect class="box" x="348" y="54" width="162" height="96" rx="8"/>
+  <text class="title" x="362" y="80">paper.py</text>
+  <text class="text" x="362" y="102">05:15 daily</text>
+  <text class="text" x="362" y="122">sections, summaries,</text>
+  <text class="text" x="362" y="140">EPUB3 by hand</text>
 
-  <rect class="box" x="316" y="416" width="316" height="122" rx="8"/>
-  <text class="t" x="332" y="442">brain_api.py</text>
-  <text class="s" x="332" y="463">stdlib HTTP server, token plus</text>
-  <text class="s" x="332" y="480">private-address check</text>
-  <text class="s" x="332" y="502">/paper/editions.json  /paper/DATE.epub</text>
-  <text class="s" x="332" y="520">/kindle.png  /paper/tzfile  /kindle/log</text>
+  <rect class="box" x="522" y="54" width="162" height="96" rx="8"/>
+  <text class="title" x="536" y="80">kindle.py</text>
+  <text class="text" x="536" y="102">05:30 daily</text>
+  <text class="text" x="536" y="122">headless Chrome,</text>
+  <text class="text" x="536" y="140">1236x1648 gray</text>
 
-  <!-- Device -->
-  <rect class="dev" x="724" y="150" width="232" height="300" rx="22"/>
-  <text class="t" x="744" y="184">Kindle, KOReader</text>
-  <text class="s" x="744" y="214">boot.sh at startup</text>
-  <text class="s" x="744" y="236">power-events.sh</text>
-  <text class="s" x="756" y="254">05:45 wake, sync, sleep</text>
-  <text class="s" x="744" y="276">sync.sh</text>
-  <text class="s" x="756" y="294">editions, image, time zone</text>
-  <line class="ln" x1="744" y1="314" x2="936" y2="314"/>
-  <text class="s" x="744" y="338">Sleep screen: the morning page</text>
-  <text class="s" x="744" y="358">Newspaper folder: last 7 days</text>
-  <text class="s" x="744" y="378">Tailscale, userspace mode</text>
+  <path class="line" d="M429,150 L429,196" marker-end="url(#arrow)"/>
+  <path class="line" d="M603,150 L603,196" marker-end="url(#arrow)"/>
 
-  <!-- Arrows -->
-  <path class="ln" d="M129 98V138" marker-end="url(#a)"/>
-  <path class="ln" d="M234 171H270V102H314" marker-end="url(#a)"/>
-  <text class="lbl" x="264" y="134" text-anchor="end">location</text>
-  <path class="ln" d="M270 171V222H314" marker-end="url(#a)"/>
-  <path class="ln" d="M234 301H284V118H314" marker-end="url(#a)"/>
-  <path class="ln" d="M284 240H314" marker-end="url(#a)"/>
-  <path class="ln" d="M234 454H292V130H314" marker-start="url(#a)" marker-end="url(#a)"/>
-  <path class="ln" d="M474 138V304" marker-end="url(#a)"/>
-  <path class="ln" d="M520 258V304" marker-end="url(#a)"/>
-  <path class="ln" d="M474 368V414" marker-end="url(#a)"/>
-  <path class="ln" d="M632 450H690V260H722" marker-end="url(#a)"/>
-  <text class="lbl" x="654" y="244" text-anchor="start">tailnet</text>
-  <path class="ln dash" d="M840 450V500H634" marker-end="url(#a)"/>
-  <text class="lbl" x="660" y="520">morning log, POST /kindle/log</text>
+  <rect class="box" x="348" y="198" width="336" height="70" rx="8"/>
+  <text class="title" x="362" y="226">out/</text>
+  <text class="text" x="362" y="248">7 days of editions, kindle.png, power log</text>
+
+  <path class="line" d="M516,268 L516,306" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="348" y="308" width="336" height="160" rx="8"/>
+  <text class="title" x="362" y="336">brain_api.py</text>
+  <text class="text" x="362" y="358">stdlib HTTP server, token and</text>
+  <text class="text" x="362" y="376">private-address check</text>
+  <text class="text" x="362" y="404">/paper/editions.json</text>
+  <text class="text" x="362" y="422">/paper/DATE.epub  /kindle.png</text>
+  <text class="text" x="362" y="440">/paper/tzfile  POST /kindle/log</text>
+
+  <!-- Delivery -->
+  <path class="line" d="M684,360 L814,300" marker-end="url(#arrow)"/>
+  <text class="label" x="712" y="312">over Tailscale</text>
+  <path class="dash" d="M814,400 L688,430" marker-end="url(#arrow)"/>
+  <text class="label" x="722" y="448">morning log</text>
+
+  <!-- Kindle -->
+  <rect class="device" x="816" y="120" width="204" height="330" rx="18"/>
+  <text class="title" x="834" y="152">Kindle, KOReader</text>
+  <text class="text" x="834" y="180">boot.sh at startup</text>
+  <text class="text" x="834" y="206">power-events.sh</text>
+  <text class="text" x="848" y="224">05:45 wake, sync, sleep</text>
+  <text class="text" x="834" y="250">sync.sh</text>
+  <text class="text" x="848" y="268">editions, image, zone</text>
+  <path class="line" d="M834,290 L1002,290"/>
+  <text class="text" x="834" y="316">Sleep screen:</text>
+  <text class="text" x="848" y="334">the morning page</text>
+  <text class="text" x="834" y="360">Newspaper folder:</text>
+  <text class="text" x="848" y="378">last 7 days</text>
+  <text class="text" x="834" y="404">Tailscale,</text>
+  <text class="text" x="848" y="422">userspace mode</text>
 </svg>

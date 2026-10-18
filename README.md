@@ -3,13 +3,21 @@
 A Kindle that does two quiet things. Every morning it gets a small newspaper, built overnight on a computer at home, with an optional local language model writing the summaries. And when it's asleep, the sleep screen is a one-page dashboard for the day: date, weather, tasks, a quote. E-ink holds that picture at zero power, so it sits on the desk like a printed page.
 
 <p align="center">
-  <img src="media/device.png" alt="The morning page on a Kindle-sized e-ink screen, rendered from demo data" width="420">
+  <img src="media/photo-hero.jpg" alt="The morning page on the Kindle's sleep screen, on a charging stand" width="440">
 </p>
 
-<!-- photo coming: media/photo-desk.jpg (the real device on the desk) -->
-> Photo of the real thing on the desk: coming. Every image in this README is rendered from made-up demo data by [`tools/render-media.sh`](tools/render-media.sh), using the same pipeline as production.
+> The photos are the real device, with demo content on the screen for the occasion. The rendered pages further down come from made-up demo data via [`tools/render-media.sh`](tools/render-media.sh), using the same pipeline as production.
 
 The device is a 2021 Kindle Paperwhite running [KOReader](https://koreader.rocks). The server side is about 3,000 lines of standard-library Python on a Mac mini. Nothing is exposed to the internet.
+
+## On the desk
+
+<p align="center">
+  <img src="media/photo-desk.jpg" alt="The Kindle on its stand on a desk, showing the morning page" width="360">
+  <img src="media/photo-home.jpg" alt="KOReader's home folder: Books, Comics, Kids, Manga, Newspaper and the Homepage image" width="300">
+</p>
+
+Asleep, it's a desk display. Awake, it's an e-reader whose home folder has one entry per kind of reading, plus the newspaper and the dashboard as a plain image.
 
 ## What's in an edition
 

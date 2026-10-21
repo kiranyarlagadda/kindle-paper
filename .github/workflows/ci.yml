@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile
+        run: python -m compileall -q server tests
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Demo edition
+        run: python server/paper.py build --demo
+      - name: Shell syntax
+        run: for f in device/*.sh server/*.sh; do echo "sh -n $f"; sh -n "$f"; done

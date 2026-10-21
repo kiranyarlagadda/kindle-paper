@@ -7,42 +7,54 @@ Kindle shows the PNG. Every section drops out cleanly when it has no data.
 Weather follows the owner via location.py (Home Assistant, then KINDLE_LAT/LON);
 Open-Meteo picks the local time zone. The section hides if neither is known.
 
+Tasks come from Apple Reminders when out/reminders.json is fresh (kindle_render.sh
+refreshes it with remindctl): the Work list on the right, the other lists on the left.
+Otherwise the page falls back to the notes folder's tasks and todo list.
+
 Demo: `python3 kindle.py --demo examples/demo-morning.json > page.html` renders the
-page from a fixtures file (made-up tasks, weather and date) with no network and
-no notes folder. tools/render-media.sh screenshots it the same way production does.
+page from a fixtures file (made-up tasks, reminders, weather and date) with no network
+and no notes folder. tools/render-media.sh screenshots it the same way production does.
 """
 
 import html
 import json
+import os
+import re
 import sys
 import time
+from pathlib import Path
 from datetime import date, datetime, timedelta
 from urllib.request import urlopen
 
 import location
 
-# Public domain translations: Marcus Aurelius and Epictetus (George Long),
-# Seneca (Richard Gummere).
+# Public domain translations, checked against their sources: Marcus Aurelius and Epictetus
+# (George Long), Seneca (Richard Gummere), the Gita (Edwin Arnold), the Dhammapada (Max Muller),
+# Plato (Benjamin Jowett), Aristotle (W. D. Ross), Heraclitus (John Burnet), Confucius (James
+# Legge), Tagore (Stray Birds, 1916). Famous lines with doubtful sources are left out on purpose.
 QUOTES = [
     ("In the morning when thou risest unwillingly, let this thought be present: I am rising to the work of a human being.", "Marcus Aurelius", "Meditations V.1"),
-    ("Do not act as if thou wert going to live ten thousand years. While thou livest, while it is in thy power, be good.", "Marcus Aurelius", "Meditations IV.17"),
-    ("The universe is transformation: life is opinion.", "Marcus Aurelius", "Meditations IV.3"),
-    ("No longer talk at all about the kind of man that a good man ought to be, but be such.", "Marcus Aurelius", "Meditations X.16"),
     ("Very little is needed to make a happy life; it is all within thyself, in thy way of thinking.", "Marcus Aurelius", "Meditations VII.67"),
-    ("Such as are thy habitual thoughts, such also will be the character of thy mind; for the soul is dyed by the thoughts.", "Marcus Aurelius", "Meditations V.16"),
     ("Look within. Within is the fountain of good, and it will ever bubble up, if thou wilt ever dig.", "Marcus Aurelius", "Meditations VII.59"),
-    ("The best way of avenging thyself is not to become like the wrong doer.", "Marcus Aurelius", "Meditations VI.6"),
-    ("Men exist for the sake of one another. Teach them then or bear with them.", "Marcus Aurelius", "Meditations VIII.59"),
     ("If it is not right, do not do it: if it is not true, do not say it.", "Marcus Aurelius", "Meditations XII.17"),
     ("Confine thyself to the present.", "Marcus Aurelius", "Meditations VII.29"),
-    ("How much trouble he avoids who does not look to see what his neighbour says or does or thinks.", "Marcus Aurelius", "Meditations IV.18"),
-    ("The art of life is more like the wrestler's art than the dancer's.", "Marcus Aurelius", "Meditations VII.61"),
-    ("Take away thy opinion, and then there is taken away the complaint, I have been harmed.", "Marcus Aurelius", "Meditations IV.7"),
-    ("Begin the morning by saying to thyself, I shall meet with the busy-body, the ungrateful, arrogant, deceitful, envious, unsocial.", "Marcus Aurelius", "Meditations II.1"),
     ("Men are disturbed not by the things which happen, but by the opinions about the things.", "Epictetus", "Enchiridion 5"),
     ("First say to yourself what you would be; and then do what you have to do.", "Epictetus", "Discourses III.23"),
     ("We are more often frightened than hurt; and we suffer more from imagination than from reality.", "Seneca", "Letters to Lucilius XIII"),
     ("Nothing, Lucilius, is ours, except time.", "Seneca", "Letters to Lucilius I"),
+    ("The life which is unexamined is not worth living.", "Socrates", "Plato, Apology 38a"),
+    ("We become just by doing just acts, temperate by doing temperate acts, brave by doing brave acts.", "Aristotle", "Nicomachean Ethics II.1"),
+    ("You cannot step twice into the same rivers; for fresh waters are ever flowing in upon you.", "Heraclitus", "Fragment 41"),
+    ("Let right deeds be thy motive, not the fruit which comes from them.", "Bhagavad Gita", "II, trans. Edwin Arnold"),
+    ("All that we are is the result of what we have thought.", "The Buddha", "Dhammapada 1"),
+    ("Hatred does not cease by hatred at any time: hatred ceases by love. This is an old rule.", "The Buddha", "Dhammapada 5"),
+    ("If one man conquer in battle a thousand times thousand men, and if another conquer himself, he is the greatest of conquerors.", "The Buddha", "Dhammapada 103"),
+    ("If you shed tears when you miss the sun, you also miss the stars.", "Rabindranath Tagore", "Stray Birds 6"),
+    ("Arise, awake, and stop not till the goal is reached.", "Swami Vivekananda", "after the Katha Upanishad"),
+    ("When you know a thing, to hold that you know it; and when you do not know a thing, to allow that you do not know it; this is knowledge.", "Confucius", "Analects II.17"),
+    ("Our life is frittered away by detail. Simplify, simplify.", "Henry David Thoreau", "Walden"),
+    ("Trust thyself: every heart vibrates to that iron string.", "Ralph Waldo Emerson", "Self-Reliance"),
+    ("If there is no struggle, there is no progress.", "Frederick Douglass", "West India Emancipation speech, 1857"),
 ]
 
 WMO = {  # code -> (word, icon)
@@ -162,6 +174,77 @@ def trim(text, n=58):
     return text if len(text) <= n else text[: n - 1].rsplit(" ", 1)[0] + "…"
 
 
+REMINDERS_JSON = Path(__file__).resolve().parent / "out" / "reminders.json"
+WORK_LIST = os.environ.get("KINDLE_WORK_LIST", "Work")
+# The left column shows only these Reminders lists (comma list).
+LEFT_LISTS = {x.strip().lower() for x in os.environ.get("KINDLE_LEFT_LISTS", "Reminders").split(",") if x.strip()}
+# Lists to leave off the page entirely (comma list), and how old an overdue item can be
+# before it stops crowding out today's (older ones only count toward "and N more").
+SKIP_LISTS = {x.strip().lower() for x in os.environ.get("KINDLE_SKIP_LISTS", "").split(",") if x.strip()}
+OVERDUE_DAYS = int(os.environ.get("KINDLE_OVERDUE_DAYS", "14"))
+_EMOJI = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200D]+")
+_LIVE = object()  # page() default: read the reminders file
+
+
+def _local_day(stamp):
+    """'2026-10-13T01:30:00Z' -> the local calendar day, as YYYY-MM-DD."""
+    try:
+        return datetime.fromisoformat(stamp.replace("Z", "+00:00")).astimezone().date().isoformat()
+    except (AttributeError, ValueError):
+        return ""
+
+
+def _field(r, *names):
+    for n in names:
+        if r.get(n) not in (None, ""):
+            return r[n]
+    return None
+
+
+def reminders(data=None, today=None):
+    """(everything else, work) open reminders, or None if there are none to read.
+
+    data is remindctl's `show all --json` output; by default it comes from out/reminders.json,
+    which kindle_render.sh refreshes right before each render. A missing file, or one older
+    than 36 hours, returns None so the page falls back to the notes folder."""
+    if data is None:
+        try:
+            if time.time() - REMINDERS_JSON.stat().st_mtime > 36 * 3600:
+                return None
+            data = json.loads(REMINDERS_JSON.read_text())
+        except (OSError, ValueError):
+            return None
+    if isinstance(data, dict):
+        data = _field(data, "reminders", "items", "data") or []
+    today = today or date.today()
+    day = today.isoformat()
+    mine, work = [], []
+    for r in data if isinstance(data, list) else []:
+        if not isinstance(r, dict) or _field(r, "isCompleted", "completed"):
+            continue
+        text = " ".join(_EMOJI.sub("", _field(r, "title", "name", "text") or "").split())
+        if not text:
+            continue
+        due = _local_day(str(_field(r, "dueDate", "due") or ""))
+        lst = _field(r, "listName", "list", "calendar", "calendarTitle") or ""
+        if isinstance(lst, dict):
+            lst = _field(lst, "title", "name") or ""
+        name = str(lst).strip().lower()
+        if name in SKIP_LISTS:
+            continue
+        item = {"text": text, "due": due, "overdue": bool(due and due < day)}
+        if name == WORK_LIST.lower():
+            work.append(item)
+        elif name in LEFT_LISTS:
+            mine.append(item)
+    # Recent overdue first, then today, then upcoming by date, then undated. Long-overdue
+    # items go last so they only show up in the "and N more" count.
+    cutoff = (today - timedelta(days=OVERDUE_DAYS)).isoformat()
+    order = lambda t: (t["overdue"] and t["due"] < cutoff, not t["overdue"], t["due"] != day,
+                       t["due"] or "9999", t["text"].lower())
+    return sorted(mine, key=order), sorted(work, key=order)
+
+
 def task_rows(items, cap=3):
     rows = []
     for t in items[:cap]:
@@ -172,7 +255,7 @@ def task_rows(items, cap=3):
             meta = f'<span class="meta">Due {short_due(t["due"])}</span>'
         rows.append(f'<li><span class="box"></span><span class="txt">{esc(trim(t["text"], 64))}{meta}</span></li>')
     if len(items) > cap:
-        rows.append(f'<li class="more">and {len(items) - cap} more in the notes</li>')
+        rows.append(f'<li class="more">and {len(items) - cap} more in Reminders</li>')
     return "".join(rows)
 
 
@@ -206,11 +289,14 @@ def health_html(health, today=None):
     return f'<section class="health"><h2>Last night</h2><div class="stats">{cells}</div></section>'
 
 
-def page(habits, todos, wx=None, now=None):
-    """The morning page. wx and now are for the demo; live calls fetch the weather."""
+def page(habits, todos, wx=None, now=None, rem=_LIVE):
+    """The morning page. wx, now and rem are for the demo; live calls fetch the weather
+    and read out/reminders.json. rem is reminders() output, or None for the notes layout."""
     now = now or datetime.now()
     today = now.date()
-    q_text, q_who, q_src = QUOTES[today.toordinal() % len(QUOTES)]
+    # Step through the list 9 at a time (9 and 22 share no factor, so every quote still comes
+    # up once per cycle) so neighbouring days land on different traditions.
+    q_text, q_who, q_src = QUOTES[(today.toordinal() * 9) % len(QUOTES)]
     wx_head, wx_strip = weather_html(wx if wx is not None else weather())
 
     # Left column: today's note tasks, then anything overdue.
@@ -223,12 +309,27 @@ def page(habits, todos, wx=None, now=None):
             later.append(t)
     later.sort(key=lambda t: t["due"] or "9999")
 
-    if habits.get("habits"):
+    if rem is _LIVE:
+        rem = reminders(today=today)
+    if rem is not None:
+        # Reminders straight from Apple Reminders: the Work list on the right, every other list on the left.
+        mine, work = rem
+        note_tasks = [{"text": t["text"]} for t in habits.get("tasks", []) if not t["done"]]
+        cutoff = (today - timedelta(days=OVERDUE_DAYS)).isoformat()
+        recent = [t for t in mine if t["overdue"] and t["due"] >= cutoff]
+        old = [t for t in mine if t["overdue"] and t["due"] < cutoff]
+        mine = recent + note_tasks + [t for t in mine if not t["overdue"]] + old
+        left = (f'<h2>Reminders</h2><ul class="list">{task_rows(mine, 3)}</ul>' if mine
+                else '<h2>Reminders</h2><p class="empty">A clear day.</p>')
+        right = (f'<h2>Work</h2><ul class="list">{task_rows(work, 3)}</ul>' if work
+                 else '<h2>Work</h2><p class="empty">Nothing for work.</p>')
+    elif habits.get("habits"):
         right = f'<h2>Habits</h2><ul class="list">{habit_rows(habits["habits"])}</ul>'
     else:
         right = f'<h2>Coming up</h2><ul class="list">{task_rows(later)}</ul>' if later else ""
-    left = (f'<h2>Today</h2><ul class="list">{task_rows(today_items)}</ul>' if today_items
-            else '<h2>Today</h2><p class="empty">A clear day.</p>')
+    if rem is None:
+        left = (f'<h2>Today</h2><ul class="list">{task_rows(today_items)}</ul>' if today_items
+                else '<h2>Today</h2><p class="empty">A clear day.</p>')
 
     return f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>Morning page</title>
@@ -264,11 +365,11 @@ def page(habits, todos, wx=None, now=None):
   h2 {{ font-size: 30px; font-weight: 600; letter-spacing: .3em; text-transform: uppercase; margin: 0 0 22px;
         padding-bottom: 12px; border-bottom: 2px solid #000; }}
   .list {{ list-style: none; margin: 0; padding: 0; }}
-  .list li {{ display: flex; align-items: baseline; gap: 18px; font-size: 32px; line-height: 1.2; padding: 8px 0; }}
+  .list li {{ display: flex; align-items: baseline; gap: 18px; font-size: 32px; line-height: 1.2; padding: 4px 0; }}
   .box {{ flex: none; width: 28px; height: 28px; border: 3px solid #000; transform: translateY(3px); }}
   .txt {{ flex: 1; }}
   .list li.more {{ display: block; padding-left: 46px; font-size: 26px; font-style: italic; color: #555; }}
-  .meta {{ display: block; font-size: 25px; font-style: italic; color: #555; margin-top: 4px; }}
+  .meta {{ display: block; font-size: 25px; font-style: italic; color: #555; margin-top: 2px; }}
   .meta b {{ font-style: normal; font-weight: 600; color: #000; letter-spacing: .14em; text-transform: uppercase; font-size: 21px; }}
   .empty {{ font-size: 36px; font-style: italic; color: #555; margin: 8px 0; }}
   .health {{ margin-top: 36px; }}
@@ -313,12 +414,17 @@ def page(habits, todos, wx=None, now=None):
 
 
 def demo(path):
-    """Render the page from a fixtures file: {now, weather, habits, todos}."""
+    """Render the page from a fixtures file: {now, weather, habits, todos, reminders}.
+
+    Reminders come from the fixture's remindctl-shaped list, never the real file; without
+    one the page shows the notes layout (Today and Habits)."""
     with open(path) as f:
         fx = json.load(f)
     wx = fx["weather"]
     wx.setdefault("place", fx.get("place", ""))
-    return page(fx.get("habits", {}), fx.get("todos", {}), wx=wx, now=datetime.fromisoformat(fx["now"]))
+    now = datetime.fromisoformat(fx["now"])
+    rem = reminders(fx["reminders"], now.date()) if "reminders" in fx else None
+    return page(fx.get("habits", {}), fx.get("todos", {}), wx=wx, now=now, rem=rem)
 
 
 if __name__ == "__main__":

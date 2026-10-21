@@ -1,5 +1,5 @@
 {
- "_comment": "Made-up inputs for the morning page. Rendered by tools/render-media.sh.",
+ "_comment": "Made-up inputs for the morning page. Rendered by tools/render-media.sh. reminders is in remindctl's show all --json shape.",
  "now": "2026-10-14T05:30:00",
  "place": "Springfield",
  "weather": {
@@ -196,5 +196,87 @@
     "due": "2026-10-17"
    }
   ]
- }
+ },
+ "reminders": [
+  {
+   "id": "demo-1",
+   "title": "Renew the car registration",
+   "dueDate": "2026-10-10T17:00:00Z",
+   "isCompleted": false,
+   "completionDate": null,
+   "listName": "Reminders",
+   "listID": "list-reminders",
+   "priority": 1
+  },
+  {
+   "id": "demo-2",
+   "title": "Pick up the dry cleaning 👕",
+   "dueDate": "2026-10-14T22:00:00Z",
+   "isCompleted": false,
+   "completionDate": null,
+   "listName": "Reminders",
+   "listID": "list-reminders",
+   "priority": 0
+  },
+  {
+   "id": "demo-3",
+   "title": "Dentist, 2:30",
+   "dueDate": "2026-10-17T19:30:00Z",
+   "isCompleted": false,
+   "completionDate": null,
+   "listName": "Reminders",
+   "listID": "list-reminders",
+   "priority": 0
+  },
+  {
+   "id": "demo-4",
+   "title": "Water the plants",
+   "dueDate": "2026-10-13T14:00:00Z",
+   "isCompleted": true,
+   "completionDate": "2026-10-13T16:00:00Z",
+   "listName": "Reminders",
+   "listID": "list-reminders",
+   "priority": 0
+  },
+  {
+   "id": "demo-5",
+   "title": "Milk, eggs, coffee",
+   "dueDate": null,
+   "isCompleted": false,
+   "completionDate": null,
+   "listName": "Groceries",
+   "listID": "list-groceries",
+   "priority": 0
+  },
+  {
+   "id": "demo-6",
+   "title": "Send the weekly status update",
+   "dueDate": "2026-10-14T21:00:00Z",
+   "isCompleted": false,
+   "completionDate": null,
+   "listName": "Work",
+   "listID": "list-work",
+   "priority": 5
+  },
+  {
+   "id": "demo-7",
+   "title": "Review the Q4 roadmap",
+   "dueDate": "2026-10-16T17:00:00Z",
+   "isCompleted": false,
+   "completionDate": null,
+   "listName": "Work",
+   "listID": "list-work",
+   "priority": 0
+  },
+  {
+   "id": "demo-8",
+   "title": "Book travel for the team offsite",
+   "dueDate": null,
+   "isCompleted": false,
+   "completionDate": null,
+   "listName": "Work",
+   "listID": "list-work",
+   "priority": 0
+  }
+ ]
 }

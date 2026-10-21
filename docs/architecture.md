@@ -14,8 +14,8 @@ Two outputs, one server, one reader. The server builds a daily EPUB and a daily 
 | `server/extract.py` | Feed parsing, Google News search and link resolving, a readability-style article extractor on `html.parser`, grayscale image downscaling with `sips`. |
 | `server/llm.py` | OpenAI-compatible chat client: JSON replies, `<think>` stripping, a shared time budget, a circuit breaker after three failures, and a scrubber that rewrites long dashes. |
 | `server/location.py` | Phone location from a Home Assistant person entity, reverse geocoding with OpenStreetMap Nominatim (cached, rate limited), fallback coordinates, and the IANA zone plus POSIX rule for that spot. |
-| `server/kindle.py` | The morning page: date, weather with an hourly strip, tasks, habits or upcoming items, a Stoic quote in a public domain translation. `--demo` renders it from a fixtures file. |
-| `server/kindle_render.sh` | Headless Chrome screenshot of `/kindle` at 1236x1648, converted to 8-bit gray with `sips`. |
+| `server/kindle.py` | The morning page: date, weather with an hourly strip, two task columns (Reminders and Work from Apple Reminders, or the notes folder's tasks and habits as a fallback), a quote in a public domain translation. `--demo` renders it from a fixtures file. |
+| `server/kindle_render.sh` | Refreshes `out/reminders.json` with `remindctl`, then takes a headless Chrome screenshot of `/kindle` at 1236x1648, converted to 8-bit gray with `sips`. |
 | `server/paper_build.sh`, `server/brain_api.sh` | Load the environment file and run the build or the server. |
 | `server/brain_api.py` | The HTTP server. It started as a small read-only JSON API over a notes folder for a desktop dashboard, and grew the Kindle endpoints. |
 
@@ -72,9 +72,11 @@ The JSON routes for the desktop dashboard (`/todos`, `/projects`, `/today`) use 
 - Images are downscaled to at most 1072 px wide, converted to grayscale JPEG, and capped at about 4 MB per edition. A normal edition is around half a megabyte.
 - Every XHTML page is parsed as XML before zipping. The package files are too, since a failure there is a bug in the code rather than in the day's news.
 
-## Calendar permission
+## Calendar and Reminders permission
 
 The calendar block shells out to `icalBuddy`, which reads Calendar through EventKit, so macOS asks for permission per program. From a `launchd` job the request just waits, and the build times out after 20 seconds and carries on without a calendar. To grant it: open Calendar.app once, start the build job by hand with `launchctl kickstart`, and watch the screen for the "would like to access your calendars" dialog.
+
+The morning page's task columns work the same way. `kindle_render.sh` runs `remindctl show all --json` before each render, under a 60 second timeout so an unanswered privacy prompt cannot hang the job, and saves the result to `out/reminders.json`. The `KINDLE_WORK_LIST` list fills the right column, the `KINDLE_LEFT_LISTS` lists fill the left one next to today's note tasks, three items each. Grant Reminders access once by running `remindctl` by hand (or kickstarting the render job) and accepting the dialog. Until then, or whenever the file is missing or older than 36 hours, the page falls back to the notes folder layout.
 
 ## Hardware
 

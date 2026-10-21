@@ -1,5 +1,7 @@
 # Kiran's Paper
 
+[![CI](https://github.com/kiranyarlagadda/kindle-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/kiranyarlagadda/kindle-paper/actions/workflows/ci.yml)
+
 A daily dashboard, and an e-reader that goes anywhere.
 
 The goal was a low-power e-ink dashboard that could do more than one thing. A Kindle was the best bet: cheap, a lot of bang for the buck, and easy to find. It sits on the desk showing the useful stuff for the day at a glance, and picked up, it's a normal e-reader.
@@ -73,7 +75,13 @@ The demo only needs Python 3.9 or newer:
 python3 server/paper.py build --demo
 ```
 
-That builds a sample newspaper from made-up stories into `server/out/demo/`. For a real setup, start with `config/brain-api.env.example` and [docs/architecture.md](docs/architecture.md). The dashboard render currently needs macOS.
+That builds a sample newspaper from made-up stories into `server/out/demo/`. The tests run the same way, with nothing to install:
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+ For a real setup, start with `config/brain-api.env.example` and [docs/architecture.md](docs/architecture.md). The dashboard render currently needs macOS.
 
 ## More
 

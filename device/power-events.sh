@@ -34,7 +34,14 @@ refresh() {
   st=$(lipc-get-prop com.lab126.powerd state 2>/dev/null)
   due=$(cat /tmp/paper-alarm-at 2>/dev/null || echo 0); gap=$(( $(date +%s) - due ))
   [ "$gap" -lt 0 ] && gap=$(( -gap ))
-  if [ "$st" != "screenSaver" ] || [ "$gap" -gt 90 ]; then
+  if [ "$st" = "screenSaver" ] && [ "$gap" -gt 90 ]; then
+    # Woken by something other than our alarm and still on the sleep screen. WiFi is off in
+    # this state, so a sync here only hangs, gets frozen by the next suspend holding the lock,
+    # and blocks the morning sync. Opening the reader fires outOfScreenSaver, which syncs.
+    rm -f "$BUSY"; say "refresh: woke in screen saver, not our alarm, skipping sync"
+    return
+  fi
+  if [ "$st" != "screenSaver" ]; then
     # Someone pressed the button: just sync, never put the reader back to sleep on them.
     rm -f "$BUSY"; say "refresh: manual wake (state $st), sync only"
     ( online || sleep 15; /bin/sh "$K/sync.sh" ) &
@@ -54,7 +61,7 @@ refresh() {
   done
   if [ -n "$ok" ]; then
     say "refresh: online after ~$((i * 3))s"
-    /bin/sh "$K/sync.sh"
+    SYNC_WAIT=90 /bin/sh "$K/sync.sh"
     report
   else
     say "refresh: never got online (wifi $(lipc-get-prop com.lab126.wifid cmState 2>/dev/null))"

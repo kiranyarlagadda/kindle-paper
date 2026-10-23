@@ -8,10 +8,26 @@ LIB=${LIBRARY:-/mnt/us/library}
 NEWS="$LIB/Newspaper"
 SLEEP=$K/sleep
 mkdir -p "$NEWS" "$SLEEP"
-# One sync at a time (wake events and the hourly loop can overlap).
+# One sync at a time (wake events and the hourly loop can overlap). A sync can be frozen by
+# suspend while it holds the lock and come back to life at the next wake, so a caller that
+# must sync (the morning alarm) sets SYNC_WAIT to wait that many seconds, then takes over.
 LOCK=/tmp/paper-sync.lock
-mkdir "$LOCK" 2>/dev/null || { echo "sync $(date): already running"; exit 0; }
-trap 'rmdir "$LOCK"' EXIT
+waited=0
+until mkdir "$LOCK" 2>/dev/null; do
+  holder=$(cat "$LOCK/pid" 2>/dev/null)
+  if [ -n "$holder" ] && ! kill -0 "$holder" 2>/dev/null; then
+    echo "sync $(date): clearing stale lock from $holder"; rm -rf "$LOCK"; continue
+  fi
+  if [ "$waited" -ge "${SYNC_WAIT:-0}" ]; then
+    [ "${SYNC_WAIT:-0}" -eq 0 ] && { echo "sync $(date): already running"; exit 0; }
+    echo "sync $(date): still locked after ${waited}s, taking over from ${holder:-unknown}"
+    [ -n "$holder" ] && kill "$holder" 2>/dev/null
+    rm -rf "$LOCK"; continue
+  fi
+  sleep 3; waited=$((waited + 3))
+done
+echo $$ > "$LOCK/pid"
+trap 'rm -rf "$LOCK"' EXIT
 get() { curl -s -f -m 180 ${PROXY:+-x "$PROXY"} "$@"; }
 
 J=$(get "$BASE/paper/editions.json?key=$KEY") || { echo "sync $(date): server unreachable"; exit 0; }
